@@ -184,7 +184,15 @@ export default function TaxSimulator() {
                         className="ml-3 px-1 border border-solid rounded-md"
                         type="text"
                         value={bussinessIncome}
+                        onClick={() => {
+                            Number(bussinessIncome) == 0
+                                ? setBussinessIncome("")
+                                : undefined;
+                        }}
                         onChange={(e) => setBussinessIncome(e.target.value)}
+                        onBlur={() => {
+                            bussinessIncome == "" ? setBussinessIncome("0") : undefined;
+                        }}
                     />
                 </label>
                 <label className="ml-8">
@@ -193,7 +201,13 @@ export default function TaxSimulator() {
                         className="ml-3 px-1 border border-solid rounded-md"
                         type="text"
                         value={expense}
+                        onClick={() => {
+                            Number(expense) == 0 ? setExpense("") : undefined;
+                        }}
                         onChange={(e) => setExpense(e.target.value)}
+                        onBlur={() => {
+                            expense == "" ? setExpense("0") : undefined;
+                        }}
                     />
                 </label>
             </div>
@@ -240,7 +254,11 @@ export default function TaxSimulator() {
 
             <h2 className="text-xl mb-5 mt-8">毎月収支</h2>
             <h3>毎月収入(平均)</h3>
-            <p>{Math.floor(Number(bussinessIncome) / 12).toLocaleString()}</p>
+            <p>
+                {Math.floor(
+                    (Number(bussinessIncome) - Number(expense)) / 12
+                ).toLocaleString()}
+            </p>
 
             <h3 className="mt-5">毎月支出</h3>
             <p>所得税: {Math.ceil(incomeTax / 12).toLocaleString()}</p>
@@ -264,7 +282,9 @@ export default function TaxSimulator() {
             <h2 className="text-xl mb-5 mt-8">収入 - 税金</h2>
             <p>
                 {(
-                    Math.floor(Number(bussinessIncome) / 12) -
+                    Math.floor(
+                        (Number(bussinessIncome) - Number(expense)) / 12
+                    ) -
                     Math.ceil(incomeTax / 12) -
                     Math.ceil(residentialTax / 12) -
                     Math.ceil(nationalPension / 12) -
