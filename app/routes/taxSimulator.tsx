@@ -9,6 +9,7 @@ const INCOME_TAX_BASIC_DEDUCTION = 480_000; // 所得税基礎控除
 const RESIDENTIAL_TAX_BASIC_DEDUCTION = 430_000; // 住民税基礎控除
 const NATIONAL_HEALTH_INSURANCE_BASIC_DEDUCTION = 430_000; // 国民健康保険基礎控除
 const BLUE_RETURN_SYSTEM_DEDUCTION = 650_000; // 青色申告特別控除
+const DEFAULT_NATIONAL_PENSION = 17_510;
 
 function getTaxableIncome(bussinessIncome: number, deduction: number): number {
     const taxableIncome = Math.floor(bussinessIncome / 1000) * 1000 - deduction;
@@ -37,9 +38,13 @@ function getTaxByIncome(
 
 function getIncomeTax(
     bussinessIncome: number,
+    idecoPremium: number,
+    smallBusinessMutualAid: number,
     isBlueReturnSystem: boolean = true
 ): number {
     var totalDeduction = INCOME_TAX_BASIC_DEDUCTION; // 基礎控除
+    totalDeduction += idecoPremium; // ideco掛金
+    totalDeduction += smallBusinessMutualAid; // 小規模企業共済掛金
     if (isBlueReturnSystem) {
         totalDeduction += BLUE_RETURN_SYSTEM_DEDUCTION; // 青色申告特別控除
     }
@@ -85,6 +90,8 @@ function addReconstructionTax(incomeTax: number) {
 
 function getResidentialTax(
     bussinessIncome: number,
+    idecoPremium: number,
+    smallBusinessMutualAid: number,
     isBlueReturnSystem: boolean = true
 ): number {
     // 松戸市は45万円以下の人は住民税非課税(単身者・扶養なしの場合)
@@ -94,6 +101,8 @@ function getResidentialTax(
 
     // 所得から基礎控除を減算する。
     var totalDeduction = RESIDENTIAL_TAX_BASIC_DEDUCTION;
+    totalDeduction += idecoPremium; // ideco掛金
+    totalDeduction += smallBusinessMutualAid; // 小規模企業共済掛金
     if (isBlueReturnSystem) {
         totalDeduction += BLUE_RETURN_SYSTEM_DEDUCTION;
     }
@@ -110,10 +119,14 @@ function getResidentialTax(
 
 function getNationalHealthInsurance(
     bussinessIncome: number,
+    idecoPremium: number,
+    smallBusinessMutualAid: number,
     isOverForty: boolean = false,
     isBlueReturnSystem: boolean = true
 ): number {
     var totalDeduction = NATIONAL_HEALTH_INSURANCE_BASIC_DEDUCTION;
+    totalDeduction += idecoPremium; // ideco掛金
+    totalDeduction += smallBusinessMutualAid; // 小規模企業共済掛金
     if (isBlueReturnSystem) {
         totalDeduction += BLUE_RETURN_SYSTEM_DEDUCTION;
     }
@@ -136,7 +149,7 @@ function getNationalHealthInsurance(
 
 function getNationalPension() {
     // 令和7年度国民年金掛金参照
-    return 17510 * 12;
+    return DEFAULT_NATIONAL_PENSION * 12;
 }
 
 export default function TaxSimulator() {
@@ -148,12 +161,16 @@ export default function TaxSimulator() {
     const [residentialTax, setResidentialTax] = useState(0);
     const [nationalPension, setNationalPension] = useState(0);
     const [nationalHealthInsurance, setNationalHealthInsurance] = useState(0);
+    const [idecoPremium, setIdecoPremium] = useState("0");
+    const [smallBusinessMutualAid, setSmallBusinessMutualAid] = useState("0");
 
     function onclickCalculateHandler() {
         setIncomeTax(
             addReconstructionTax(
                 getIncomeTax(
                     Number(bussinessIncome) - Number(expense),
+                    Number(idecoPremium),
+                    Number(smallBusinessMutualAid),
                     blueReturnSystem
                 )
             )
@@ -161,6 +178,8 @@ export default function TaxSimulator() {
         setResidentialTax(
             getResidentialTax(
                 Number(bussinessIncome) - Number(expense),
+                Number(idecoPremium),
+                Number(smallBusinessMutualAid),
                 blueReturnSystem
             )
         );
@@ -168,6 +187,8 @@ export default function TaxSimulator() {
         setNationalHealthInsurance(
             getNationalHealthInsurance(
                 Number(bussinessIncome) - Number(expense),
+                Number(idecoPremium),
+                Number(smallBusinessMutualAid),
                 overForty,
                 blueReturnSystem
             )
@@ -177,7 +198,7 @@ export default function TaxSimulator() {
     return (
         <div className="mx-8 my-4">
             <h2 className="text-xl mb-5">所得等入力</h2>
-            <div className="mb-3">
+            <div className="mb-3 flex flex-col md:flex-row">
                 <label>
                     事業所得
                     <input
@@ -191,7 +212,9 @@ export default function TaxSimulator() {
                         }}
                         onChange={(e) => setBussinessIncome(e.target.value)}
                         onBlur={() => {
-                            bussinessIncome == "" ? setBussinessIncome("0") : undefined;
+                            bussinessIncome == ""
+                                ? setBussinessIncome("0")
+                                : undefined;
                         }}
                     />
                 </label>
@@ -207,6 +230,46 @@ export default function TaxSimulator() {
                         onChange={(e) => setExpense(e.target.value)}
                         onBlur={() => {
                             expense == "" ? setExpense("0") : undefined;
+                        }}
+                    />
+                </label>
+                <label className="ml-8">
+                    ideco掛金
+                    <input
+                        className="ml-3 px-1 border border-solid rounded-md"
+                        type="text"
+                        value={idecoPremium}
+                        onClick={() => {
+                            Number(idecoPremium) == 0
+                                ? setIdecoPremium("")
+                                : undefined;
+                        }}
+                        onChange={(e) => setIdecoPremium(e.target.value)}
+                        onBlur={() => {
+                            idecoPremium == ""
+                                ? setIdecoPremium("0")
+                                : undefined;
+                        }}
+                    />
+                </label>
+                <label className="ml-8">
+                    小規模企業共済掛金
+                    <input
+                        className="ml-3 px-1 border border-solid rounded-md"
+                        type="text"
+                        value={smallBusinessMutualAid}
+                        onClick={() => {
+                            Number(smallBusinessMutualAid) == 0
+                                ? setSmallBusinessMutualAid("")
+                                : undefined;
+                        }}
+                        onChange={(e) =>
+                            setSmallBusinessMutualAid(e.target.value)
+                        }
+                        onBlur={() => {
+                            smallBusinessMutualAid == ""
+                                ? setSmallBusinessMutualAid("0")
+                                : undefined;
                         }}
                     />
                 </label>
@@ -241,16 +304,16 @@ export default function TaxSimulator() {
 
             <h2 className="text-xl mb-5 mt-8">個人事業主に掛かる税金等</h2>
             <h3>所得税(特別復興支援税含む)</h3>
-            <p>{incomeTax.toLocaleString()}</p>
+            <p>{Math.ceil(incomeTax).toLocaleString()}</p>
 
             <h3>住民税</h3>
-            <p>{residentialTax.toLocaleString()}</p>
+            <p>{Math.ceil(residentialTax).toLocaleString()}</p>
 
             <h3>国民年金</h3>
-            <p>{nationalPension.toLocaleString()}</p>
+            <p>{Math.ceil(nationalPension).toLocaleString()}</p>
 
             <h3>国民健康保険料</h3>
-            <p>{nationalHealthInsurance.toLocaleString()}</p>
+            <p>{Math.ceil(nationalHealthInsurance).toLocaleString()}</p>
 
             <h2 className="text-xl mb-5 mt-8">毎月収支</h2>
             <h3>毎月収入(平均)</h3>
@@ -260,7 +323,7 @@ export default function TaxSimulator() {
                 ).toLocaleString()}
             </p>
 
-            <h3 className="mt-5">毎月支出</h3>
+            <h3 className="mt-5">税金毎月平均額</h3>
             <p>所得税: {Math.ceil(incomeTax / 12).toLocaleString()}</p>
             <p>住民税: {Math.ceil(residentialTax / 12).toLocaleString()}</p>
             <p>国民年金: {Math.ceil(nationalPension / 12).toLocaleString()}</p>
@@ -283,7 +346,11 @@ export default function TaxSimulator() {
             <p>
                 {(
                     Math.floor(
-                        (Number(bussinessIncome) - Number(expense)) / 12
+                        (Number(bussinessIncome) -
+                            Number(expense) -
+                            Number(idecoPremium) -
+                            Number(smallBusinessMutualAid)) /
+                            12
                     ) -
                     Math.ceil(incomeTax / 12) -
                     Math.ceil(residentialTax / 12) -
