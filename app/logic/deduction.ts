@@ -85,22 +85,12 @@ export class IncomeTaxBaseDeduction implements IDeduction {
  * 住民税基礎控除クラス
  */
 export class ResidentTaxBaseDeduction implements IDeduction {
-    private now: Date;
-
-    constructor() {
-        this.now = new Date();
-    }
-
     value(): number {
         if (!this.isApply()) {
             return 0;
         }
 
-        if (this.now.getFullYear() <= 2020) {
-            return 330000;
-        } else {
-            return 430000;
-        }
+        return 430000;
     }
 
     isApply(): boolean {
