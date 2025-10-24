@@ -20,12 +20,16 @@ test("事業所得クラスが正しく生成されること", () => {
 });
 
 test("所得から経費を引けること", () => {
-    const income = new BusinessIncome(1000000);
-    expect(income.value()).toBe(1000000);
+    let income: IIncome;
+    income = new BusinessIncome(1000000);
     income.addExpense(0);
     expect(income.value()).toBe(1000000);
+
+    income = new BusinessIncome(1000000);
     income.addExpense(500);
     expect(income.value()).toBe(999000);
+
+    income = new BusinessIncome(1000000);
     income.addExpense(1000);
     expect(income.value()).toBe(999000);
 });
