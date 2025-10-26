@@ -31,14 +31,8 @@ abstract class BaseTaxReturnModel implements ITaxReturn {
                 break;
         }
 
-        switch (submit) {
-            case SubmitType.mail:
-                this.value += specialDeduction.SUBMIT.MAIL;
-                break;
-
-            case SubmitType.eTax:
-                this.value += specialDeduction.SUBMIT.ETAX;
-                break;
+        if (bookeeping == BookeepingType.doubleEntry && submit == SubmitType.eTax) {
+            this.value += specialDeduction.SUBMIT.ETAX;
         }
     }
 }
