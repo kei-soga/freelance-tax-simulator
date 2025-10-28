@@ -4,7 +4,6 @@ import {
     INCOME_TAX_BASE_DEDUCTIONS,
     INCOME_TAX_BASE_DEDUCTION_ELEVATIONS,
 } from "~/common/consts";
-import { type IIncome } from "~/models/income";
 
 export interface IDeduction {
     /**
@@ -24,10 +23,10 @@ export interface IDeduction {
  * 所得税基礎控除クラス
  */
 export class IncomeTaxBaseDeduction implements IDeduction {
-    private income: IIncome;
+    private income: number;
     private target_year: number;
 
-    constructor(income: IIncome, target_year: number = new Date().getFullYear()) {
+    constructor(income: number, target_year: number = new Date().getFullYear()) {
         this.income = income;
         this.target_year = target_year;
     }
@@ -37,15 +36,15 @@ export class IncomeTaxBaseDeduction implements IDeduction {
      * @returns 控除額
      */
     private before2024(): number {
-        if (this.income.value() <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L1.max) {
+        if (this.income <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L1.max) {
             return INCOME_TAX_BASE_DEDUCTIONS.L3;
-        } else if (this.income.value() <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L2.max) {
+        } else if (this.income <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L2.max) {
             return INCOME_TAX_BASE_DEDUCTIONS.L3;
-        } else if (this.income.value() <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L3.max) {
+        } else if (this.income <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L3.max) {
             return INCOME_TAX_BASE_DEDUCTIONS.L3;
-        } else if (this.income.value() <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L4.max) {
+        } else if (this.income <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L4.max) {
             return INCOME_TAX_BASE_DEDUCTIONS.L4;
-        } else if (this.income.value() <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L5.max) {
+        } else if (this.income <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L5.max) {
             return INCOME_TAX_BASE_DEDUCTIONS.L5;
         } else {
             return INCOME_TAX_BASE_DEDUCTIONS.L6;
@@ -57,21 +56,21 @@ export class IncomeTaxBaseDeduction implements IDeduction {
      * @returns 控除額
      */
     private between2025and2026(): number {
-        if (this.income.value() <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L1.max) {
+        if (this.income <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L1.max) {
             return INCOME_TAX_BASE_DEDUCTIONS.L1;
-        } else if (this.income.value() <= 3360000) {
+        } else if (this.income <= 3360000) {
             return 880000;
-        } else if (this.income.value() <= 4890000) {
+        } else if (this.income <= 4890000) {
             return 680000;
-        } else if (this.income.value() <= 6550000) {
+        } else if (this.income <= 6550000) {
             return 630000;
-        } else if (this.income.value() <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L2.max) {
+        } else if (this.income <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L2.max) {
             return INCOME_TAX_BASE_DEDUCTIONS.L2;
-        } else if (this.income.value() <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L3.max) {
+        } else if (this.income <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L3.max) {
             return INCOME_TAX_BASE_DEDUCTIONS.L3;
-        } else if (this.income.value() <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L4.max) {
+        } else if (this.income <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L4.max) {
             return INCOME_TAX_BASE_DEDUCTIONS.L4;
-        } else if (this.income.value() <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L5.max) {
+        } else if (this.income <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L5.max) {
             return INCOME_TAX_BASE_DEDUCTIONS.L5;
         } else {
             return INCOME_TAX_BASE_DEDUCTIONS.L6;
@@ -83,15 +82,15 @@ export class IncomeTaxBaseDeduction implements IDeduction {
      * @returns 控除額
      */
     private after2027(): number {
-        if (this.income.value() <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L1.max) {
+        if (this.income <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L1.max) {
             return INCOME_TAX_BASE_DEDUCTIONS.L1;
-        } else if (this.income.value() <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L2.max) {
+        } else if (this.income <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L2.max) {
             return INCOME_TAX_BASE_DEDUCTIONS.L2;
-        } else if (this.income.value() <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L3.max) {
+        } else if (this.income <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L3.max) {
             return INCOME_TAX_BASE_DEDUCTIONS.L3;
-        } else if (this.income.value() <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L4.max) {
+        } else if (this.income <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L4.max) {
             return INCOME_TAX_BASE_DEDUCTIONS.L4;
-        } else if (this.income.value() <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L5.max) {
+        } else if (this.income <= INCOME_TAX_BASE_DEDUCTION_ELEVATIONS.L5.max) {
             return INCOME_TAX_BASE_DEDUCTIONS.L5;
         } else {
             return INCOME_TAX_BASE_DEDUCTIONS.L6;
