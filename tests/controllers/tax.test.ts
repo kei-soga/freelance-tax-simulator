@@ -4,6 +4,7 @@ import {
     ResidentTax,
     NationalPensionInsurancePremium,
     NationalHealthInsurancePremium,
+    ConsumptionTax,
 } from "~/controllers/tax";
 
 describe("税金", () => {
@@ -215,5 +216,14 @@ describe("税金", () => {
 
         tax = new NationalPensionInsurancePremium(2, true);
         expect(tax.value()).toBe(429840);
+    });
+
+    test("消費税（簡易課税50%）", () => {
+        let tax: ITax;
+        tax = new ConsumptionTax(11000000, 0.1);
+        expect(tax.value()).toBe(500000);
+
+        tax = new ConsumptionTax(10800000, 0.08);
+        expect(tax.value()).toBe(400000);
     });
 });

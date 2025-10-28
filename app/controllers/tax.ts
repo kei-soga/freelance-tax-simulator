@@ -287,3 +287,25 @@ export class NationalPensionInsurancePremium implements ITax {
         }
     }
 }
+
+/**
+ * 消費税クラス（簡易課税50%）
+ */
+export class ConsumptionTax implements ITax {
+    private taxIncludedSales: number;
+    private rate: number;
+
+    constructor(taxIncludedSales: number, rate: number) {
+        this.taxIncludedSales = taxIncludedSales;
+        this.rate = rate;
+    }
+
+    addIncomeDeduction(deduction: IDeduction): void {}
+
+    value(): number {
+        const simpleTaxationRate = 0.5;
+        const tax = (this.taxIncludedSales / (1 + this.rate)) * this.rate * simpleTaxationRate;
+
+        return Math.floor(tax);
+    }
+}
