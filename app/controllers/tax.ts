@@ -36,6 +36,9 @@ export interface ITax {
     value(): number;
 }
 
+/**
+ * 所得税クラス
+ */
 export class IncomeTax implements ITax {
     private income: number;
     private basicAmount: number;
